@@ -1,24 +1,21 @@
 #!/bin/bash
-# Get display info for Wayland/KDE
+# Get display info with correct diagonal from hwinfo
 
-# Try kscreen-doctor first (KDE Plasma)
-if command -v kscreen-doctor &>/dev/null; then
-    kscreen-doctor -o 2>/dev/null | grep "^Output" | while read line; do
-        name=$(echo "$line" | awk '{print $2}')
-        # Get resolution from modes
-        res=$(kscreen-doctor -o 2>/dev/null | grep -A5 "^Output.*$name" | grep -oP '\d+x\d+@\d+' | head -1)
-        echo "$name $res"
-    done | head -2 | tr '\n' '  '
-    exit 0
-fi
-
-# Fallback: /sys/class/drm
-for card in /sys/class/drm/card*-*; do
-    if [[ -f "$card/status" ]] && grep -q "^connected$" "$card/status" 2>/dev/null; then
-        name=$(basename "$card" | sed 's/card[0-9]-//')
-        if [[ -f "$card/modes" ]]; then
-            res=$(head -1 "$card/modes")
-        fi
-        echo "$name $res"
-    fi
-done | head -2 | tr '\n' '  '
+hwinfo --monitor 2>/dev/null | awk '
+/Model:/ {
+    gsub(/"/, "", $0)
+    model = $2
+    for(i=3; i<=NF; i++) model = model " " $i
+}
+/Resolution:.*@/ {
+    res = $2
+}
+/Size:/ {
+    split($2, dims, "x")
+    w = dims[1]
+    h = dims[2]
+    diag_mm = sqrt(w*w + h*h)
+    diag_in = diag_mm / 25.4
+    printf "%s: %s, %.0f\"\n", model, res, diag_in
+}
+'
