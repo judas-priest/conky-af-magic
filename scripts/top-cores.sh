@@ -42,6 +42,16 @@ while read -r core user nice system idle iowait irq softirq; do
     echo "$core $usage"
 done <<< "$(get_cpu_stats)"
 } | sort -k2 -rn | head -n "$TOP_N" | \
-    awk '{printf "${color6}%2d${color} %3d%%  ", $1, $2}'
-
-echo ""
+    awk '{
+        cores[NR] = $1
+        usage[NR] = $2
+    }
+    END {
+        for (i = 1; i <= NR; i += 2) {
+            printf "${color6}Core %2d:${color} %3d%%", cores[i], usage[i]
+            if (i+1 <= NR) {
+                printf "${goto 300}${color6}Core %2d:${color} %3d%%", cores[i+1], usage[i+1]
+            }
+            printf "\n"
+        }
+    }'
