@@ -37,7 +37,7 @@ icon=$(echo "$icon" | tr -d ' ')
 temp=$(echo "$temp" | tr -d '+')
 feels=$(echo "$feels" | tr -d '+')
 
-output="${icon} \${color6}${CITY}\${alignr}\${color0}${temp}\${color}
+output="\${font0}${icon}\${font} \${color6}${CITY}\${alignr}\${color0}${temp}\${color}
 \${color5}${condition}\${color}
 \${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
 \${color6}Влажность\${alignr}\${color}${humidity}
