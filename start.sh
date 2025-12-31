@@ -20,7 +20,8 @@ sleep 0.5
 # Start all panels from repository
 conky -c "$SCRIPT_DIR/left.conf" -d &
 conky -c "$SCRIPT_DIR/right.conf" -d &
+conky -c "$SCRIPT_DIR/center-top.conf" -d &
 conky -c "$SCRIPT_DIR/center-bottom.conf" -d &
 
-echo "Conky started! (3 panels)"
+echo "Conky started! (4 panels)"
 echo "Scripts linked: $CONFIG_DIR/scripts -> $SCRIPT_DIR/scripts"
