@@ -43,6 +43,6 @@ output="\${color0}WEATHER\${alignr}${temp}\${color}
 \${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
 \${color6}Влажность\${alignr}\${color}${humidity}
 \${color6}Ветер\${alignr}\${color}${wind}
-\${font0}${moon_icon}\${font} \${color6}${moon_text}\${color}"
+\${font0}${moon_icon}\${font} \${color6}Луна\${alignr}\${color}день ${moon_text}"
 
 echo "$output" | tee "$CACHE"
