@@ -5,6 +5,8 @@
 -- Returns only the number, strips unit
 function conky_val(arg)
     if arg == nil or arg == '' then return '' end
+    -- Replace : with space for multi-arg vars like top_mem:mem_res:1
+    arg = string.gsub(arg, ':', ' ')
     local val = conky_parse('${' .. arg .. '}')
     if val == nil or val == '' then return '' end
     return string.gsub(val, '([%d,%.]+)[KMGTPEkmgtpe]?i?[Bb]/?s?', '%1')
@@ -13,6 +15,8 @@ end
 -- Returns number + space + short unit (G, M, K)
 function conky_unit(arg)
     if arg == nil or arg == '' then return '' end
+    -- Replace : with space for multi-arg vars like top_mem:mem_res:1
+    arg = string.gsub(arg, ':', ' ')
     local val = conky_parse('${' .. arg .. '}')
     if val == nil or val == '' then return '' end
     -- Extract number and unit, shorten unit
