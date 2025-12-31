@@ -24,20 +24,20 @@ get_weather() {
     curl -sf --max-time 5 "wttr.in/${CITY}?format=$1&lang=${LANG}" 2>/dev/null
 }
 
-# Get all data in one call for efficiency
-icon=$(get_weather "%c" | tr -d ' ')
-temp=$(get_weather "%t" | tr -d '+')
-feels=$(get_weather "%f" | tr -d '+')
-condition=$(get_weather "%C")
-humidity=$(get_weather "%h")
-wind=$(get_weather "%w")
+# Get data - one call with custom format
+data=$(curl -sf --max-time 10 "wttr.in/${CITY}?format=%c|%t|%f|%C|%h|%w&lang=${LANG}" 2>/dev/null)
 
-if [[ -z "$temp" || "$temp" == "Unknown"* ]]; then
+if [[ -z "$data" || "$data" == "Unknown"* ]]; then
     echo '${color6}Нет данных${color}'
     exit 0
 fi
 
-output="\${color0}${icon}\${color} \${color6}${CITY}\${alignr}\${color0}${temp}\${color}
+IFS='|' read -r icon temp feels condition humidity wind <<< "$data"
+icon=$(echo "$icon" | tr -d ' ')
+temp=$(echo "$temp" | tr -d '+')
+feels=$(echo "$feels" | tr -d '+')
+
+output="${icon} \${color6}${CITY}\${alignr}\${color0}${temp}\${color}
 \${color5}${condition}\${color}
 \${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
 \${color6}Влажность\${alignr}\${color}${humidity}
