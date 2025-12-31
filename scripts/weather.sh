@@ -61,7 +61,7 @@ wind_arrow="${wind:0:1}"
 wind_rest="${wind:1}"
 if [[ "$wind" == ↑* || "$wind" == ↓* || "$wind" == ←* || "$wind" == →* || \
       "$wind" == ↖* || "$wind" == ↗* || "$wind" == ↘* || "$wind" == ↙* ]]; then
-    wind_colored="\${color4}${wind_arrow}\${color}${wind_rest}"
+    wind_colored="\${color6}${wind_arrow}\${color}${wind_rest}"
 else
     wind_colored="${wind}"
 fi
@@ -81,7 +81,7 @@ case $moon_day_num in
 esac
 
 output="\${color0}WEATHER\${alignr}${temp}\${color}
-\${color6}${CITY}\${alignr}\${font0}${icon}\${font} \${color}${condition}
+\${color6}${CITY}\${alignr}\${font0}${icon}\${font}\${color}${condition}
 \${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
 \${color6}Влажность\${alignr}\${color}${humidity}
 \${color6}Ветер\${alignr}\${color}${wind_colored}
