@@ -56,27 +56,21 @@ case "$icon_emoji" in
     *)          icon="\${color6}${NF_CLOUDY}\${color}" ;;
 esac
 
-# Nerd Font arrows for wind direction with colors
+# Wind direction arrows with colors
 # North (↓) = blue (cold), South (↑) = orange (warm), East/West = gray
-NF_ARR_DOWN=$(printf '\xf3\xb0\x9c\xae')   # 󰜮 nf-md-arrow_down_bold
-NF_ARR_UP=$(printf '\xf3\xb0\x9c\xb7')     # 󰜷 nf-md-arrow_up_bold
-NF_ARR_LEFT=$(printf '\xf3\xb0\x9c\xb1')   # 󰜱 nf-md-arrow_left_bold
-NF_ARR_RIGHT=$(printf '\xf3\xb0\x9c\xb4')  # 󰜴 nf-md-arrow_right_bold
-
-# Convert km/h to m/s
 wind_arrow="${wind:0:1}"
 wind_kmh=$(echo "$wind" | grep -oE '[0-9]+')
 wind_ms=$(awk "BEGIN {printf \"%.0f\", $wind_kmh / 3.6}")
 
 case "$wind_arrow" in
-    ↓)  wind_colored="\${font0}\${color4}${NF_ARR_DOWN}\${color}\${font}${wind_ms}m/s" ;;   # north=blue
-    ↑)  wind_colored="\${font0}\${color3}${NF_ARR_UP}\${color}\${font}${wind_ms}m/s" ;;     # south=orange
-    ←)  wind_colored="\${font0}\${color6}${NF_ARR_LEFT}\${color}\${font}${wind_ms}m/s" ;;   # east=gray
-    →)  wind_colored="\${font0}\${color6}${NF_ARR_RIGHT}\${color}\${font}${wind_ms}m/s" ;;  # west=gray
-    ↘)  wind_colored="\${font0}\${color4}${NF_ARR_DOWN}\${color}\${font}${wind_ms}m/s" ;;   # NE=blue
-    ↙)  wind_colored="\${font0}\${color4}${NF_ARR_DOWN}\${color}\${font}${wind_ms}m/s" ;;   # NW=blue
-    ↗)  wind_colored="\${font0}\${color3}${NF_ARR_UP}\${color}\${font}${wind_ms}m/s" ;;     # SE=orange
-    ↖)  wind_colored="\${font0}\${color3}${NF_ARR_UP}\${color}\${font}${wind_ms}m/s" ;;     # SW=orange
+    ↓)  wind_colored="\${color4}↓\${color}${wind_ms}m/s" ;;   # north=blue
+    ↑)  wind_colored="\${color3}↑\${color}${wind_ms}m/s" ;;   # south=orange
+    ←)  wind_colored="\${color6}←\${color}${wind_ms}m/s" ;;   # east=gray
+    →)  wind_colored="\${color6}→\${color}${wind_ms}m/s" ;;   # west=gray
+    ↘)  wind_colored="\${color4}↘\${color}${wind_ms}m/s" ;;   # NE=blue
+    ↙)  wind_colored="\${color4}↙\${color}${wind_ms}m/s" ;;   # NW=blue
+    ↗)  wind_colored="\${color3}↗\${color}${wind_ms}m/s" ;;   # SE=orange
+    ↖)  wind_colored="\${color3}↖\${color}${wind_ms}m/s" ;;   # SW=orange
     *)  wind_colored="${wind_ms}m/s" ;;
 esac
 
