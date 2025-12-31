@@ -56,15 +56,29 @@ case "$icon_emoji" in
     *)          icon="\${color6}${NF_CLOUDY}\${color}" ;;
 esac
 
-# Color wind direction arrow
+# Nerd Font arrows for wind direction with colors
+# North (↓) = blue (cold), South (↑) = orange (warm), East/West = gray
+NF_ARR_DOWN=$(printf '\xf3\xb0\x9c\xae')   # 󰜮 nf-md-arrow_down_bold
+NF_ARR_UP=$(printf '\xf3\xb0\x9c\xb7')     # 󰜷 nf-md-arrow_up_bold
+NF_ARR_LEFT=$(printf '\xf3\xb0\x9c\xb1')   # 󰜱 nf-md-arrow_left_bold
+NF_ARR_RIGHT=$(printf '\xf3\xb0\x9c\xb4')  # 󰜴 nf-md-arrow_right_bold
+
+# Convert km/h to m/s
 wind_arrow="${wind:0:1}"
-wind_rest="${wind:1}"
-if [[ "$wind" == ↑* || "$wind" == ↓* || "$wind" == ←* || "$wind" == →* || \
-      "$wind" == ↖* || "$wind" == ↗* || "$wind" == ↘* || "$wind" == ↙* ]]; then
-    wind_colored="\${color6}${wind_arrow}\${color}${wind_rest}"
-else
-    wind_colored="${wind}"
-fi
+wind_kmh=$(echo "$wind" | grep -oE '[0-9]+')
+wind_ms=$(awk "BEGIN {printf \"%.0f\", $wind_kmh / 3.6}")
+
+case "$wind_arrow" in
+    ↓)  wind_colored="\${color4}${NF_ARR_DOWN}\${color}${wind_ms}m/s" ;;   # north=blue
+    ↑)  wind_colored="\${color3}${NF_ARR_UP}\${color}${wind_ms}m/s" ;;     # south=orange
+    ←)  wind_colored="\${color6}${NF_ARR_LEFT}\${color}${wind_ms}m/s" ;;   # east=gray
+    →)  wind_colored="\${color6}${NF_ARR_RIGHT}\${color}${wind_ms}m/s" ;;  # west=gray
+    ↘)  wind_colored="\${color4}${NF_ARR_DOWN}\${color}${wind_ms}m/s" ;;   # NE=blue
+    ↙)  wind_colored="\${color4}${NF_ARR_DOWN}\${color}${wind_ms}m/s" ;;   # NW=blue
+    ↗)  wind_colored="\${color3}${NF_ARR_UP}\${color}${wind_ms}m/s" ;;     # SE=orange
+    ↖)  wind_colored="\${color3}${NF_ARR_UP}\${color}${wind_ms}m/s" ;;     # SW=orange
+    *)  wind_colored="${wind_ms}m/s" ;;
+esac
 
 # Convert moon day to phase name
 moon_day_num=$(echo "$moon_day" | tr -d ' ')
@@ -81,7 +95,7 @@ case $moon_day_num in
 esac
 
 output="\${color0}WEATHER\${alignr}${temp}\${color}
-\${color6}${CITY}\${alignr}\${font0}${icon}\${font}\${color}${condition}
+\${color6}${CITY}\${alignr}\${font0}${icon}\${font} \${color}${condition}
 \${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
 \${color6}Влажность\${alignr}\${color}${humidity}
 \${color6}Ветер\${alignr}\${color}${wind_colored}
