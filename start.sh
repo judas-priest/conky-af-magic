@@ -8,5 +8,6 @@ sleep 1
 conky -c ~/.config/conky/left.conf -d &
 conky -c ~/.config/conky/right.conf -d &
 conky -c ~/.config/conky/center-top.conf -d &
+conky -c ~/.config/conky/center-bottom.conf -d &
 
-echo "Conky started! (3 panels)"
+echo "Conky started! (4 panels)"
