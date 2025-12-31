@@ -81,9 +81,11 @@ cp "$SCRIPT_DIR/right.conf" "$CONFIG_DIR/"
 cp "$SCRIPT_DIR/center-top.conf" "$CONFIG_DIR/"
 cp "$SCRIPT_DIR/scripts/weather.sh" "$CONFIG_DIR/scripts/"
 cp "$SCRIPT_DIR/scripts/display.sh" "$CONFIG_DIR/scripts/"
+cp "$SCRIPT_DIR/scripts/top-cores.sh" "$CONFIG_DIR/scripts/"
 
 chmod +x "$CONFIG_DIR/scripts/weather.sh"
 chmod +x "$CONFIG_DIR/scripts/display.sh"
+chmod +x "$CONFIG_DIR/scripts/top-cores.sh"
 
 echo -e "  ${GREEN}✓${NC} Files installed to ${GRAY}$CONFIG_DIR${NC}"
 
