@@ -93,7 +93,7 @@ output="\${color0}WEATHER\${alignr}${temp}\${color}
 \${color6}${CITY}\${alignr}${icon} \${color}${condition}
 \${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
 \${color6}Влажность\${alignr}\${color}${humidity}
-\${color6}Ветер\${alignr}\${color}${wind_colored}
+\${color6}Ветер\${alignr}${wind_colored}
 \${color6}Луна\${alignr}\${font0}\${color3}${NF_NIGHT}\${font}\${color} ${moon_text}"
 
 echo "$output" | tee "$CACHE"
