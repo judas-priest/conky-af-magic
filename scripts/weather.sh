@@ -38,7 +38,7 @@ NF_PCLOUDY=$(printf '\xf3\xb0\x96\x95')    # nf-md-weather_partly_cloudy
 NF_CLOUDY=$(printf '\xf3\xb0\x96\x90')     # nf-md-weather_cloudy
 NF_RAINY=$(printf '\xf3\xb0\x96\x97')      # nf-md-weather_rainy
 NF_THUNDER=$(printf '\xf3\xb0\x96\x93')    # nf-md-weather_lightning
-NF_SNOWY=$(printf '\xf3\xb0\x96\x9c')      # nf-md-weather_snowy
+NF_SNOWY="❄"                               # Unicode snowflake
 NF_FOG=$(printf '\xf3\xb0\x96\x91')        # nf-md-weather_fog
 NF_NIGHT=$(printf '\xf3\xb0\x96\x94')      # nf-md-weather_night
 
