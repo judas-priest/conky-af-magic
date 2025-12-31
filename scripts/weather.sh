@@ -46,15 +46,15 @@ NF_NIGHT=$(printf '\xf3\xb0\x96\x94')      # nf-md-weather_night
 # Convert weather emoji to icon with color
 icon_emoji=$(echo "$icon_emoji" | tr -d ' ')
 case "$icon_emoji" in
-    *☀*|*🌞*)   icon="\${font0}\${color3}${NF_SUNNY}\${color}\${font}" ;;
-    *🌤*|*⛅*)   icon="\${font0}\${color3}${NF_PCLOUDY}\${color}\${font}" ;;
-    *☁*|*🌥*)   icon="\${font0}\${color6}${NF_CLOUDY}\${color}\${font}" ;;
-    *🌧*|*🌦*)   icon="\${font0}\${color4}${NF_RAINY}\${color}\${font}" ;;
-    *⛈*|*🌩*)   icon="\${font0}\${color3}${NF_THUNDER}\${color}\${font}" ;;
-    *🌨*|*❄*)   icon="\${font0}\${color4}${NF_SNOWY}\${color}\${font}" ;;
-    *🌫*|*🌁*)   icon="\${font0}\${color6}${NF_FOG}\${color}\${font}" ;;
-    *🌙*|*🌚*)   icon="\${font0}\${color3}${NF_NIGHT}\${color}\${font}" ;;
-    *)          icon="\${font0}\${color6}${NF_CLOUDY}\${color}\${font}" ;;
+    *☀*|*🌞*)   icon="\${font0}\${color3}${NF_SUNNY}\${font}\${color}" ;;
+    *🌤*|*⛅*)   icon="\${font0}\${color3}${NF_PCLOUDY}\${font}\${color}" ;;
+    *☁*|*🌥*)   icon="\${font0}\${color6}${NF_CLOUDY}\${font}\${color}" ;;
+    *🌧*|*🌦*)   icon="\${font0}\${color4}${NF_RAINY}\${font}\${color}" ;;
+    *⛈*|*🌩*)   icon="\${font0}\${color3}${NF_THUNDER}\${font}\${color}" ;;
+    *🌨*|*❄*)   icon="\${font0}\${color4}${NF_SNOWY}\${font}\${color}" ;;
+    *🌫*|*🌁*)   icon="\${font0}\${color6}${NF_FOG}\${font}\${color}" ;;
+    *🌙*|*🌚*)   icon="\${font0}\${color3}${NF_NIGHT}\${font}\${color}" ;;
+    *)          icon="\${font0}\${color6}${NF_CLOUDY}\${font}\${color}" ;;
 esac
 
 # Wind direction arrows with colors
@@ -64,36 +64,36 @@ wind_kmh=$(echo "$wind" | grep -oE '[0-9]+')
 wind_ms=$(awk "BEGIN {printf \"%.0f\", $wind_kmh / 3.6}")
 
 case "$wind_arrow" in
-    ↓)  wind_colored="\${font0}\${color4}↓\${color}\${font}${wind_ms}m/s" ;;   # north=blue
-    ↑)  wind_colored="\${font0}\${color3}↑\${color}\${font}${wind_ms}m/s" ;;   # south=orange
-    ←)  wind_colored="\${font0}\${color6}←\${color}\${font}${wind_ms}m/s" ;;   # east=gray
-    →)  wind_colored="\${font0}\${color6}→\${color}\${font}${wind_ms}m/s" ;;   # west=gray
-    ↘)  wind_colored="\${font0}\${color4}↘\${color}\${font}${wind_ms}m/s" ;;   # NE=blue
-    ↙)  wind_colored="\${font0}\${color4}↙\${color}\${font}${wind_ms}m/s" ;;   # NW=blue
-    ↗)  wind_colored="\${font0}\${color3}↗\${color}\${font}${wind_ms}m/s" ;;   # SE=orange
-    ↖)  wind_colored="\${font0}\${color3}↖\${color}\${font}${wind_ms}m/s" ;;   # SW=orange
+    ↓)  wind_colored="\${font0}\${color4}↓\${font}\${color}${wind_ms}m/s" ;;   # north=blue
+    ↑)  wind_colored="\${font0}\${color3}↑\${font}\${color}${wind_ms}m/s" ;;   # south=orange
+    ←)  wind_colored="\${font0}\${color6}←\${font}\${color}${wind_ms}m/s" ;;   # east=gray
+    →)  wind_colored="\${font0}\${color6}→\${font}\${color}${wind_ms}m/s" ;;   # west=gray
+    ↘)  wind_colored="\${font0}\${color4}↘\${font}\${color}${wind_ms}m/s" ;;   # NE=blue
+    ↙)  wind_colored="\${font0}\${color4}↙\${font}\${color}${wind_ms}m/s" ;;   # NW=blue
+    ↗)  wind_colored="\${font0}\${color3}↗\${font}\${color}${wind_ms}m/s" ;;   # SE=orange
+    ↖)  wind_colored="\${font0}\${color3}↖\${font}\${color}${wind_ms}m/s" ;;   # SW=orange
     *)  wind_colored="${wind_ms}m/s" ;;
 esac
 
-# Convert moon day to phase name
+# Convert moon day to phase name and icon
 moon_day_num=$(echo "$moon_day" | tr -d ' ')
 case $moon_day_num in
-    0)           moon_text="Новолуние" ;;
-    [1-6])       moon_text="Растущий серп" ;;
-    7)           moon_text="Первая четверть" ;;
-    [8-9]|1[0-3]) moon_text="Растущая" ;;
-    14|15)       moon_text="Полнолуние" ;;
-    1[6-9]|2[0-1]) moon_text="Убывающая" ;;
-    22)          moon_text="Последняя четверть" ;;
-    2[3-9])      moon_text="Убывающий серп" ;;
-    *)           moon_text="день $moon_day_num" ;;
+    0)            moon_icon="🌑"; moon_text="Новолуние" ;;
+    [1-6])        moon_icon="🌒"; moon_text="Растущий серп" ;;
+    7)            moon_icon="🌓"; moon_text="Первая четверть" ;;
+    [8-9]|1[0-3]) moon_icon="🌔"; moon_text="Растущая" ;;
+    14|15)        moon_icon="🌕"; moon_text="Полнолуние" ;;
+    1[6-9]|2[0-1]) moon_icon="🌖"; moon_text="Убывающая" ;;
+    22)           moon_icon="🌗"; moon_text="Последняя четверть" ;;
+    2[3-9])       moon_icon="🌘"; moon_text="Убывающий серп" ;;
+    *)            moon_icon="🌙"; moon_text="день $moon_day_num" ;;
 esac
 
 output="\${color0}WEATHER\${alignr}${temp}\${color}
-\${color6}${CITY}\${alignr}${icon} \${color}${condition}
+\${color6}${CITY}\${alignr}${icon} ${condition}
 \${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
 \${color6}Влажность\${alignr}\${color}${humidity}
 \${color6}Ветер\${alignr}${wind_colored}
-\${color6}Луна\${alignr}\${font0}\${color3}${NF_NIGHT}\${font}\${color} ${moon_text}"
+\${color6}Луна\${alignr}\${color3}${moon_icon}\${color} ${moon_text}"
 
 echo "$output" | tee "$CACHE"
