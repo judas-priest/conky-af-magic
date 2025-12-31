@@ -1,11 +1,28 @@
 --[[
     Conky AF-Magic - Format utilities
-    Colors units (B, KiB, MiB, GiB, etc.) with color6 (gray)
 ]]
 
-function conky_color_units(arg)
+-- Returns only the number, strips unit
+function conky_val(arg)
     if arg == nil or arg == '' then return '' end
     local val = conky_parse('${' .. arg .. '}')
     if val == nil or val == '' then return '' end
-    return string.gsub(val, '([%d,%.]+)([KMGTPEkmgtpe]?i?[Bb]/?s?)', '%1${color6}%2${color}')
+    return string.gsub(val, '([%d,%.]+)[KMGTPEkmgtpe]?i?[Bb]/?s?', '%1')
+end
+
+-- Returns number + space + short unit (G, M, K)
+function conky_unit(arg)
+    if arg == nil or arg == '' then return '' end
+    local val = conky_parse('${' .. arg .. '}')
+    if val == nil or val == '' then return '' end
+    -- Extract number and unit, shorten unit
+    local num, unit = string.match(val, '([%d,%.]+)([KMGTPEkmgtpe]?i?[Bb]/?s?)')
+    if num == nil then return val end
+    if unit == nil or unit == '' then return num end
+    -- Shorten: GiB -> G, MiB -> M, KiB -> K, B -> B
+    local short = string.upper(string.sub(unit, 1, 1))
+    if short == 'B' then short = 'B' end
+    -- Keep /s for speeds
+    if string.match(unit, '/s') then short = short .. '/s' end
+    return num .. ' ' .. short
 end
