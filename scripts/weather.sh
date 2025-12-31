@@ -41,6 +41,9 @@ NF_THUNDER=$(printf '\xf3\xb0\x96\x93')    # nf-md-weather_lightning
 NF_SNOWY=$(printf '\xf3\xb0\x96\x9c')      # nf-md-weather_snowy
 NF_FOG=$(printf '\xf3\xb0\x96\x91')        # nf-md-weather_fog
 NF_NIGHT=$(printf '\xf3\xb0\x96\x94')      # nf-md-weather_night
+NF_THERMO=$(printf '\xf3\xb0\x94\x8f')     # nf-md-thermometer
+NF_HUMIDITY=$(printf '\xf3\xb0\x96\x8e')   # nf-md-water_percent
+NF_WIND=$(printf '\xf3\xb0\x96\x9d')       # nf-md-weather_windy
 
 # Convert weather emoji to Nerd Font icon with color
 icon_emoji=$(echo "$icon_emoji" | tr -d ' ')
@@ -55,6 +58,16 @@ case "$icon_emoji" in
     *🌙*|*🌚*)   icon="\${color3}${NF_NIGHT}\${color}" ;;
     *)          icon="\${color6}${NF_CLOUDY}\${color}" ;;
 esac
+
+# Color wind direction arrow
+wind_arrow="${wind:0:1}"
+wind_rest="${wind:1}"
+if [[ "$wind" == ↑* || "$wind" == ↓* || "$wind" == ←* || "$wind" == →* || \
+      "$wind" == ↖* || "$wind" == ↗* || "$wind" == ↘* || "$wind" == ↙* ]]; then
+    wind_colored="\${color4}${wind_arrow}\${color}${wind_rest}"
+else
+    wind_colored="${wind}"
+fi
 
 # Convert moon day to phase name
 moon_day_num=$(echo "$moon_day" | tr -d ' ')
@@ -71,10 +84,10 @@ case $moon_day_num in
 esac
 
 output="\${color0}WEATHER\${alignr}${temp}\${color}
-\${color6}${CITY}\${alignr}\${font0}${icon}\${font} \${color}${condition}
-\${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
-\${color6}Влажность\${alignr}\${color}${humidity}
-\${color6}Ветер\${alignr}\${color}${wind}
-\${color6}Луна\${alignr}\${font0}\${color3}${NF_NIGHT}\${color}\${font} ${moon_text}"
+\${color6}${CITY}\${alignr}\${font0}${icon}\${font} ${condition}
+\${voffset 5}\${font0}\${color3}${NF_THERMO}\${color}\${font} \${color6}Ощущается\${alignr}\${color}${feels}
+\${font0}\${color4}${NF_HUMIDITY}\${color}\${font} \${color6}Влажность\${alignr}\${color}${humidity}
+\${font0}\${color4}${NF_WIND}\${color}\${font} \${color6}Ветер\${alignr}\${color}${wind_colored}
+\${font0}\${color3}${NF_NIGHT}\${color}\${font} \${color6}Луна\${alignr}\${color}${moon_text}"
 
 echo "$output" | tee "$CACHE"
