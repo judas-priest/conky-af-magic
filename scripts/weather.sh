@@ -80,8 +80,8 @@ case $moon_day_num in
     *)           moon_text="день $moon_day_num" ;;
 esac
 
-output="\${color0}WEATHER \${font0}${icon}\${font}\${alignr}${temp}\${color}
-\${color6}${CITY}\${alignr}\${color}${condition}
+output="\${color0}WEATHER\${alignr}${temp}\${color}
+\${color6}${CITY}\${alignr}\${font0}${icon}\${font} \${color}${condition}
 \${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
 \${color6}Влажность\${alignr}\${color}${humidity}
 \${color6}Ветер\${alignr}\${color}${wind_colored}
