@@ -5,50 +5,43 @@
 
 TOP_N="${1:-8}"
 
-# Get per-core CPU usage using mpstat or fallback
-if command -v mpstat &>/dev/null; then
-    mpstat -P ALL 1 1 2>/dev/null | awk '/^[0-9]/ || /^Average:/ && !/all/' | \
-        tail -n +2 | grep -v "all" | \
-        awk '{print $2, 100-$NF}' | \
-        sort -k2 -rn | head -n "$TOP_N" | \
-        awk '{printf "${color6}Core %2d${color} %5.1f%%  ", $1, $2}'
-else
-    # Fallback: read /proc/stat twice
-    declare -A prev_total prev_idle
+# Read CPU stats twice with 1 second interval
+get_cpu_stats() {
+    grep '^cpu[0-9]' /proc/stat | while read -r line; do
+        core=$(echo "$line" | awk '{print $1}' | sed 's/cpu//')
+        stats=$(echo "$line" | awk '{print $2,$3,$4,$5,$6,$7,$8}')
+        echo "$core $stats"
+    done
+}
 
-    while read -r line; do
-        if [[ $line =~ ^cpu([0-9]+) ]]; then
-            core=${BASH_REMATCH[1]}
-            read -r _ user nice system idle iowait irq softirq <<< "$line"
-            total=$((user + nice + system + idle + iowait + irq + softirq))
-            prev_total[$core]=$total
-            prev_idle[$core]=$idle
-        fi
-    done < /proc/stat
+# First reading
+declare -A prev_stats
+while read -r core user nice system idle iowait irq softirq; do
+    prev_stats[$core]="$user $nice $system $idle $iowait $irq $softirq"
+done <<< "$(get_cpu_stats)"
 
-    sleep 1
+sleep 1
 
-    declare -A usage
-    while read -r line; do
-        if [[ $line =~ ^cpu([0-9]+) ]]; then
-            core=${BASH_REMATCH[1]}
-            read -r _ user nice system idle iowait irq softirq <<< "$line"
-            total=$((user + nice + system + idle + iowait + irq + softirq))
-            diff_total=$((total - prev_total[$core]))
-            diff_idle=$((idle - prev_idle[$core]))
-            if ((diff_total > 0)); then
-                usage[$core]=$(( (diff_total - diff_idle) * 100 / diff_total ))
-            else
-                usage[$core]=0
-            fi
-        fi
-    done < /proc/stat
+# Second reading and calculate usage
+{
+while read -r core user nice system idle iowait irq softirq; do
+    read -r p_user p_nice p_system p_idle p_iowait p_irq p_softirq <<< "${prev_stats[$core]}"
 
-    # Sort and show top N
-    for core in "${!usage[@]}"; do
-        echo "$core ${usage[$core]}"
-    done | sort -k2 -rn | head -n "$TOP_N" | \
-        awk '{printf "${color6}Core %2d${color} %3d%%  ", $1, $2}'
-fi
+    prev_total=$((p_user + p_nice + p_system + p_idle + p_iowait + p_irq + p_softirq))
+    curr_total=$((user + nice + system + idle + iowait + irq + softirq))
+
+    diff_total=$((curr_total - prev_total))
+    diff_idle=$((idle - p_idle))
+
+    if ((diff_total > 0)); then
+        usage=$(( (diff_total - diff_idle) * 100 / diff_total ))
+    else
+        usage=0
+    fi
+
+    echo "$core $usage"
+done <<< "$(get_cpu_stats)"
+} | sort -k2 -rn | head -n "$TOP_N" | \
+    awk '{printf "${color6}%2d${color} %3d%%  ", $1, $2}'
 
 echo ""
