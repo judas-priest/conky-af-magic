@@ -20,10 +20,6 @@ if [[ -f "$CACHE" ]]; then
     fi
 fi
 
-get_weather() {
-    curl -sf --max-time 5 "wttr.in/${CITY}?format=$1&lang=${LANG}" 2>/dev/null
-}
-
 # Get data - one call with custom format (u=M for m/s wind)
 data=$(curl -sf --max-time 10 "wttr.in/${CITY}?format=%c|%t|%f|%C|%h|%w|%m|%M&u=M&lang=${LANG}" 2>/dev/null)
 
@@ -36,32 +32,42 @@ IFS='|' read -r icon_emoji temp feels condition humidity wind moon_emoji moon_da
 temp=$(echo "$temp" | tr -d '+')
 feels=$(echo "$feels" | tr -d '+')
 
+# Nerd Font icons (using printf for correct UTF-8)
+NF_SUNNY=$(printf '\xf3\xb0\x96\x99')      # nf-md-weather_sunny
+NF_PCLOUDY=$(printf '\xf3\xb0\x96\x95')    # nf-md-weather_partly_cloudy
+NF_CLOUDY=$(printf '\xf3\xb0\x96\x90')     # nf-md-weather_cloudy
+NF_RAINY=$(printf '\xf3\xb0\x96\x97')      # nf-md-weather_rainy
+NF_THUNDER=$(printf '\xf3\xb0\x96\x93')    # nf-md-weather_lightning
+NF_SNOWY=$(printf '\xf3\xb0\x96\x9c')      # nf-md-weather_snowy
+NF_FOG=$(printf '\xf3\xb0\x96\x91')        # nf-md-weather_fog
+NF_NIGHT=$(printf '\xf3\xb0\x96\x94')      # nf-md-weather_night
+
 # Convert weather emoji to Nerd Font icon with color
 icon_emoji=$(echo "$icon_emoji" | tr -d ' ')
 case "$icon_emoji" in
-    ☀️|🌞)      icon="\${color3}󰖙\${color}" ;;   # sunny - yellow
-    🌤️|⛅)      icon="\${color3}󰖕\${color}" ;;   # partly cloudy - yellow
-    ☁️|🌥️)      icon="\${color6}󰖐\${color}" ;;   # cloudy - gray
-    🌧️|🌦️)      icon="\${color4}󰖗\${color}" ;;   # rain - blue
-    ⛈️|🌩️)      icon="\${color3}󰖓\${color}" ;;   # thunderstorm - yellow
-    🌨️|❄️)      icon="\${color4}󰼶\${color}" ;;   # snow - blue
-    🌫️|🌁)      icon="\${color6}󰖑\${color}" ;;   # fog - gray
-    🌙|🌚)      icon="\${color3}󰖔\${color}" ;;   # night - yellow
-    *)          icon="\${color6}󰖐\${color}" ;;   # default cloudy - gray
+    *☀*|*🌞*)   icon="\${color3}${NF_SUNNY}\${color}" ;;
+    *🌤*|*⛅*)   icon="\${color3}${NF_PCLOUDY}\${color}" ;;
+    *☁*|*🌥*)   icon="\${color6}${NF_CLOUDY}\${color}" ;;
+    *🌧*|*🌦*)   icon="\${color4}${NF_RAINY}\${color}" ;;
+    *⛈*|*🌩*)   icon="\${color3}${NF_THUNDER}\${color}" ;;
+    *🌨*|*❄*)   icon="\${color4}${NF_SNOWY}\${color}" ;;
+    *🌫*|*🌁*)   icon="\${color6}${NF_FOG}\${color}" ;;
+    *🌙*|*🌚*)   icon="\${color3}${NF_NIGHT}\${color}" ;;
+    *)          icon="\${color6}${NF_CLOUDY}\${color}" ;;
 esac
 
-# Convert moon day to phase name and icon (yellow)
+# Convert moon day to phase name
 moon_day_num=$(echo "$moon_day" | tr -d ' ')
 case $moon_day_num in
-    0)           moon_text="Новолуние"; moon_icon="" ;;
-    [1-6])       moon_text="Растущий серп"; moon_icon="" ;;
-    7)           moon_text="Первая четверть"; moon_icon="" ;;
-    [8-9]|1[0-3]) moon_text="Растущая"; moon_icon="" ;;
-    14|15)       moon_text="Полнолуние"; moon_icon="" ;;
-    1[6-9]|2[0-1]) moon_text="Убывающая"; moon_icon="" ;;
-    22)          moon_text="Последняя четверть"; moon_icon="" ;;
-    2[3-9])      moon_text="Убывающий серп"; moon_icon="" ;;
-    *)           moon_text="день $moon_day_num"; moon_icon="" ;;
+    0)           moon_text="Новолуние" ;;
+    [1-6])       moon_text="Растущий серп" ;;
+    7)           moon_text="Первая четверть" ;;
+    [8-9]|1[0-3]) moon_text="Растущая" ;;
+    14|15)       moon_text="Полнолуние" ;;
+    1[6-9]|2[0-1]) moon_text="Убывающая" ;;
+    22)          moon_text="Последняя четверть" ;;
+    2[3-9])      moon_text="Убывающий серп" ;;
+    *)           moon_text="день $moon_day_num" ;;
 esac
 
 output="\${color0}WEATHER\${alignr}${temp}\${color}
@@ -69,6 +75,6 @@ output="\${color0}WEATHER\${alignr}${temp}\${color}
 \${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
 \${color6}Влажность\${alignr}\${color}${humidity}
 \${color6}Ветер\${alignr}\${color}${wind}
-\${color6}Луна\${alignr}\${font0}\${color3}${moon_icon}\${color}\${font} ${moon_text}"
+\${color6}Луна\${alignr}\${font0}\${color3}${NF_NIGHT}\${color}\${font} ${moon_text}"
 
 echo "$output" | tee "$CACHE"
