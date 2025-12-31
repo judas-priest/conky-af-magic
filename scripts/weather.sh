@@ -53,10 +53,10 @@ case $moon_day_num in
 esac
 
 output="\${color0}WEATHER\${alignr}${temp}\${color}
-\${font0}${icon}\${font} \${color6}${CITY}\${alignr}\${color}${condition}
+\${color6}${CITY}\${alignr}\${font0}${icon}\${font} \${color}${condition}
 \${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
 \${color6}Влажность\${alignr}\${color}${humidity}
 \${color6}Ветер\${alignr}\${color}${wind}
-\${font0}${moon_icon}\${font} \${color6}Луна\${alignr}\${color}${moon_text}"
+\${color6}Луна\${alignr}\${font0}${moon_icon}\${font} \${color}${moon_text}"
 
 echo "$output" | tee "$CACHE"
