@@ -69,14 +69,14 @@ wind_kmh=$(echo "$wind" | grep -oE '[0-9]+')
 wind_ms=$(awk "BEGIN {printf \"%.0f\", $wind_kmh / 3.6}")
 
 case "$wind_arrow" in
-    ↓)  wind_colored="\${color4}${NF_ARR_DOWN}\${color}${wind_ms}m/s" ;;   # north=blue
-    ↑)  wind_colored="\${color3}${NF_ARR_UP}\${color}${wind_ms}m/s" ;;     # south=orange
-    ←)  wind_colored="\${color6}${NF_ARR_LEFT}\${color}${wind_ms}m/s" ;;   # east=gray
-    →)  wind_colored="\${color6}${NF_ARR_RIGHT}\${color}${wind_ms}m/s" ;;  # west=gray
-    ↘)  wind_colored="\${color4}${NF_ARR_DOWN}\${color}${wind_ms}m/s" ;;   # NE=blue
-    ↙)  wind_colored="\${color4}${NF_ARR_DOWN}\${color}${wind_ms}m/s" ;;   # NW=blue
-    ↗)  wind_colored="\${color3}${NF_ARR_UP}\${color}${wind_ms}m/s" ;;     # SE=orange
-    ↖)  wind_colored="\${color3}${NF_ARR_UP}\${color}${wind_ms}m/s" ;;     # SW=orange
+    ↓)  wind_colored="\${font0}\${color4}${NF_ARR_DOWN}\${color}\${font}${wind_ms}m/s" ;;   # north=blue
+    ↑)  wind_colored="\${font0}\${color3}${NF_ARR_UP}\${color}\${font}${wind_ms}m/s" ;;     # south=orange
+    ←)  wind_colored="\${font0}\${color6}${NF_ARR_LEFT}\${color}\${font}${wind_ms}m/s" ;;   # east=gray
+    →)  wind_colored="\${font0}\${color6}${NF_ARR_RIGHT}\${color}\${font}${wind_ms}m/s" ;;  # west=gray
+    ↘)  wind_colored="\${font0}\${color4}${NF_ARR_DOWN}\${color}\${font}${wind_ms}m/s" ;;   # NE=blue
+    ↙)  wind_colored="\${font0}\${color4}${NF_ARR_DOWN}\${color}\${font}${wind_ms}m/s" ;;   # NW=blue
+    ↗)  wind_colored="\${font0}\${color3}${NF_ARR_UP}\${color}\${font}${wind_ms}m/s" ;;     # SE=orange
+    ↖)  wind_colored="\${font0}\${color3}${NF_ARR_UP}\${color}\${font}${wind_ms}m/s" ;;     # SW=orange
     *)  wind_colored="${wind_ms}m/s" ;;
 esac
 
