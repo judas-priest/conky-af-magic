@@ -50,7 +50,7 @@ done <<< "$(get_cpu_stats)"
         for (i = 1; i <= NR; i += 2) {
             printf "${color6}Core %2d:${color} %3d%%", cores[i], usage[i]
             if (i+1 <= NR) {
-                printf "${goto 300}${color6}Core %2d:${color} %3d%%", cores[i+1], usage[i+1]
+                printf "${alignr}${color6}Core %2d:${color} %3d%%", cores[i+1], usage[i+1]
             }
             printf "\n"
         }
