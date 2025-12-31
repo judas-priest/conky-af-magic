@@ -5,10 +5,10 @@
 -- Battery bar color based on status
 -- Discharging = green, Full = gray, Charging = orange
 function conky_battery_color()
-    local status = conky_parse('${battery_status}')
+    local status = conky_parse('${execi 10 cat /sys/class/power_supply/BAT*/status 2>/dev/null | head -1}')
     if status == nil then status = '' end
     status = status:gsub('%s+', '')  -- trim whitespace
-    if status == "Full" or status == "Not charging" then
+    if status == "Full" or status == "Notcharging" then
         return "${color6}"
     elseif status == "Discharging" then
         return "${color2}"
