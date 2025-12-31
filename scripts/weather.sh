@@ -4,7 +4,6 @@
 #
 
 CITY="${CONKY_CITY:-Moscow}"
-LANG="${CONKY_LANG:-ru}"
 
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}"
 CACHE="$CACHE_DIR/conky_weather"
@@ -20,8 +19,8 @@ if [[ -f "$CACHE" ]]; then
     fi
 fi
 
-# Get data - one call with custom format (u=M for m/s wind)
-data=$(curl -sf --max-time 10 "wttr.in/${CITY}?format=%c|%t|%f|%C|%h|%w|%m|%M&u=M&lang=${LANG}" 2>/dev/null)
+# Get data in English - one call with custom format (u=M for m/s wind)
+data=$(curl -sf --max-time 10 "wttr.in/${CITY}?format=%c|%t|%f|%C|%h|%w|%m|%M&u=M&lang=en" 2>/dev/null)
 
 if [[ -z "$data" || "$data" == "Unknown"* ]]; then
     echo '${color6}Нет данных${color}'
@@ -32,58 +31,56 @@ IFS='|' read -r icon_emoji temp feels condition humidity wind moon_emoji moon_da
 temp=$(echo "$temp" | tr -d '+')
 feels=$(echo "$feels" | tr -d '+')
 
-# Get temperature number for rain/snow correction
-temp_num=$(echo "$temp" | grep -oE '[-]?[0-9]+')
-
-# Weather condition dictionary - shorten and fix translations
+# English to Russian weather dictionary
 case "$condition" in
-    *"Слабый ливневый"*|*"Умеренный ливневый"*|*"Сильный ливневый"*)
-        if (( temp_num < 0 )); then
-            condition="Снег"
-        else
-            condition="Ливень"
+    # Clear/Sunny
+    "Clear"|"Sunny")                          condition="Ясно" ;;
+    "Partly cloudy"|"Partly Cloudy")          condition="Облачно" ;;
+    "Cloudy"|"Overcast")                      condition="Пасмурно" ;;
+
+    # Rain
+    "Patchy rain possible")                   condition="Возможен дождь" ;;
+    "Patchy light drizzle"|"Light drizzle")   condition="Морось" ;;
+    "Drizzle"|"Freezing drizzle")             condition="Морось" ;;
+    "Light rain"|"Patchy light rain")         condition="Небольшой дождь" ;;
+    "Moderate rain"|"Moderate rain at times") condition="Дождь" ;;
+    "Heavy rain"|"Heavy rain at times")       condition="Сильный дождь" ;;
+    "Light rain shower"|"Light showers")      condition="Небольшой дождь" ;;
+    "Moderate or heavy rain shower")          condition="Ливень" ;;
+    "Torrential rain shower")                 condition="Сильный ливень" ;;
+
+    # Freezing rain
+    "Freezing rain"|"Light freezing rain")    condition="Ледяной дождь" ;;
+    "Moderate or heavy freezing rain")        condition="Ледяной дождь" ;;
+
+    # Snow
+    "Patchy snow possible")                   condition="Возможен снег" ;;
+    "Patchy light snow"|"Light snow")         condition="Небольшой снег" ;;
+    "Moderate snow"|"Patchy moderate snow")   condition="Снег" ;;
+    "Heavy snow"|"Patchy heavy snow")         condition="Сильный снег" ;;
+    "Light snow showers")                     condition="Небольшой снег" ;;
+    "Moderate or heavy snow showers")         condition="Снегопад" ;;
+    "Blowing snow"|"Blizzard")                condition="Метель" ;;
+
+    # Sleet
+    "Sleet"|"Light sleet"|"Light sleet showers") condition="Мокрый снег" ;;
+    "Moderate or heavy sleet"*)               condition="Мокрый снег" ;;
+    "Ice pellets"|"Light showers of ice pellets") condition="Град" ;;
+    "Moderate or heavy showers of ice pellets")   condition="Сильный град" ;;
+
+    # Thunderstorm
+    *"thundery"*|*"thunder"*)                 condition="Гроза" ;;
+    "Thunderstorm"|"Thundery outbreaks"*)     condition="Гроза" ;;
+
+    # Fog/Mist
+    "Mist")                                   condition="Дымка" ;;
+    "Fog"|"Freezing fog")                     condition="Туман" ;;
+
+    # Fallback - keep original if short, otherwise truncate
+    *)
+        if (( ${#condition} > 18 )); then
+            condition=$(echo "$condition" | cut -c1-18)
         fi ;;
-    *"ливневый снег"*)           condition="Снегопад" ;;
-    *"Переменная облачность"*)   condition="Облачно" ;;
-    *"Частично облачно"*)        condition="Облачно" ;;
-    *"Местами"*"дождь"*)
-        if (( temp_num < 0 )); then
-            condition="Местами снег"
-        else
-            condition="Местами дождь"
-        fi ;;
-    *"Местами"*"снег"*)          condition="Местами снег" ;;
-    *"Местами"*"морось"*)        condition="Морось" ;;
-    *"Небольшой дождь"*)
-        if (( temp_num < 0 )); then
-            condition="Небольшой снег"
-        else
-            condition="Небольшой дождь"
-        fi ;;
-    *"Умеренный дождь"*)
-        if (( temp_num < 0 )); then
-            condition="Снег"
-        else
-            condition="Дождь"
-        fi ;;
-    *"Сильный дождь"*)
-        if (( temp_num < 0 )); then
-            condition="Сильный снег"
-        else
-            condition="Сильный дождь"
-        fi ;;
-    *"Небольшой снег"*)          condition="Небольшой снег" ;;
-    *"Умеренный снег"*)          condition="Снег" ;;
-    *"Сильный снег"*)            condition="Сильный снег" ;;
-    *"Дождь со снегом"*)         condition="Дождь со снегом" ;;
-    *"Гроза"*)                   condition="Гроза" ;;
-    *"Туман"*)                   condition="Туман" ;;
-    *"Дымка"*)                   condition="Дымка" ;;
-    *"Пасмурно"*)                condition="Пасмурно" ;;
-    *"Облачно"*)                 condition="Облачно" ;;
-    *"Ясно"*)                    condition="Ясно" ;;
-    *"Солнечно"*)                condition="Солнечно" ;;
-    *)                           condition=$(echo "$condition" | cut -c1-20) ;;
 esac
 
 # Nerd Font icons (using printf for correct UTF-8)
