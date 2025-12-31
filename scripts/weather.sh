@@ -31,7 +31,60 @@ fi
 IFS='|' read -r icon_emoji temp feels condition humidity wind moon_emoji moon_day <<< "$data"
 temp=$(echo "$temp" | tr -d '+')
 feels=$(echo "$feels" | tr -d '+')
-condition=$(echo "$condition" | cut -c1-25)
+
+# Get temperature number for rain/snow correction
+temp_num=$(echo "$temp" | grep -oE '[-]?[0-9]+')
+
+# Weather condition dictionary - shorten and fix translations
+case "$condition" in
+    *"Слабый ливневый"*|*"Умеренный ливневый"*|*"Сильный ливневый"*)
+        if (( temp_num < 0 )); then
+            condition="Снег"
+        else
+            condition="Ливень"
+        fi ;;
+    *"ливневый снег"*)           condition="Снегопад" ;;
+    *"Переменная облачность"*)   condition="Облачно" ;;
+    *"Частично облачно"*)        condition="Облачно" ;;
+    *"Местами"*"дождь"*)
+        if (( temp_num < 0 )); then
+            condition="Местами снег"
+        else
+            condition="Местами дождь"
+        fi ;;
+    *"Местами"*"снег"*)          condition="Местами снег" ;;
+    *"Местами"*"морось"*)        condition="Морось" ;;
+    *"Небольшой дождь"*)
+        if (( temp_num < 0 )); then
+            condition="Небольшой снег"
+        else
+            condition="Небольшой дождь"
+        fi ;;
+    *"Умеренный дождь"*)
+        if (( temp_num < 0 )); then
+            condition="Снег"
+        else
+            condition="Дождь"
+        fi ;;
+    *"Сильный дождь"*)
+        if (( temp_num < 0 )); then
+            condition="Сильный снег"
+        else
+            condition="Сильный дождь"
+        fi ;;
+    *"Небольшой снег"*)          condition="Небольшой снег" ;;
+    *"Умеренный снег"*)          condition="Снег" ;;
+    *"Сильный снег"*)            condition="Сильный снег" ;;
+    *"Дождь со снегом"*)         condition="Дождь со снегом" ;;
+    *"Гроза"*)                   condition="Гроза" ;;
+    *"Туман"*)                   condition="Туман" ;;
+    *"Дымка"*)                   condition="Дымка" ;;
+    *"Пасмурно"*)                condition="Пасмурно" ;;
+    *"Облачно"*)                 condition="Облачно" ;;
+    *"Ясно"*)                    condition="Ясно" ;;
+    *"Солнечно"*)                condition="Солнечно" ;;
+    *)                           condition=$(echo "$condition" | cut -c1-20) ;;
+esac
 
 # Nerd Font icons (using printf for correct UTF-8)
 NF_SUNNY=$(printf '\xf3\xb0\x96\x99')      # nf-md-weather_sunny
