@@ -39,7 +39,7 @@ feels=$(echo "$feels" | tr -d '+')
 moon_icon=$(echo "$moon_icon" | tr -d ' ')
 
 output="\${color0}WEATHER\${alignr}${temp}\${color}
-\${font0}${icon}\${font} \${color6}${condition}\${color}
+\${font0}${icon}\${font} \${color6}${CITY}\${alignr}\${color}${condition}
 \${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
 \${color6}Влажность\${alignr}\${color}${humidity}
 \${color6}Ветер\${alignr}\${color}${wind}
