@@ -24,6 +24,8 @@ get_weather() {
     curl -sf --max-time 5 "wttr.in/${CITY}?format=$1&lang=${LANG}" 2>/dev/null
 }
 
+# Get all data in one call for efficiency
+icon=$(get_weather "%c" | tr -d ' ')
 temp=$(get_weather "%t" | tr -d '+')
 feels=$(get_weather "%f" | tr -d '+')
 condition=$(get_weather "%C")
@@ -34,24 +36,6 @@ if [[ -z "$temp" || "$temp" == "Unknown"* ]]; then
     echo '${color6}Нет данных${color}'
     exit 0
 fi
-
-# Simple ASCII icons
-case "$condition" in
-    *[Яя]сно*|*[Сс]олнечно*|*[Cc]lear*|*[Ss]unny*)
-        icon="[*]" ;;
-    *[Оо]блачно*|*[Cc]loudy*|*[Пп]асмурно*)
-        icon="[~]" ;;
-    *[Дд]ождь*|*[Rr]ain*|*[Лл]ивень*|*[Оо]садки*)
-        icon="[/]" ;;
-    *[Сс]нег*|*[Ss]now*|*[Мм]етель*)
-        icon="[#]" ;;
-    *[Гг]роза*|*[Tt]hunder*|*[Мм]олния*)
-        icon="[!]" ;;
-    *[Тт]уман*|*[Ff]og*|*[Дд]ымка*)
-        icon="[=]" ;;
-    *)
-        icon="[?]" ;;
-esac
 
 output="\${color0}${icon}\${color} \${color6}${CITY}\${alignr}\${color0}${temp}\${color}
 \${color5}${condition}\${color}
