@@ -32,24 +32,36 @@ if [[ -z "$data" || "$data" == "Unknown"* ]]; then
     exit 0
 fi
 
-IFS='|' read -r icon temp feels condition humidity wind moon_icon moon_day <<< "$data"
-icon=$(echo "$icon" | tr -d ' ')
+IFS='|' read -r icon_emoji temp feels condition humidity wind moon_emoji moon_day <<< "$data"
 temp=$(echo "$temp" | tr -d '+')
 feels=$(echo "$feels" | tr -d '+')
-moon_icon=$(echo "$moon_icon" | tr -d ' ')
 
-# Convert moon day to phase name
+# Convert weather emoji to Nerd Font icon
+icon_emoji=$(echo "$icon_emoji" | tr -d ' ')
+case "$icon_emoji" in
+    ☀️|🌞)      icon="󰖙" ;;   # sunny
+    🌤️|⛅)      icon="󰖕" ;;   # partly cloudy
+    ☁️|🌥️)      icon="󰖐" ;;   # cloudy
+    🌧️|🌦️)      icon="󰖗" ;;   # rain
+    ⛈️|🌩️)      icon="󰖓" ;;   # thunderstorm
+    🌨️|❄️)      icon="󰼶" ;;   # snow
+    🌫️|🌁)      icon="󰖑" ;;   # fog
+    🌙|🌚)      icon="󰖔" ;;   # night
+    *)          icon="󰖐" ;;   # default cloudy
+esac
+
+# Convert moon day to phase name and icon
 moon_day_num=$(echo "$moon_day" | tr -d ' ')
 case $moon_day_num in
-    0)           moon_text="Новолуние" ;;
-    [1-6])       moon_text="Растущий серп" ;;
-    7)           moon_text="Первая четверть" ;;
-    [8-9]|1[0-3]) moon_text="Растущая" ;;
-    14|15)       moon_text="Полнолуние" ;;
-    1[6-9]|2[0-1]) moon_text="Убывающая" ;;
-    22)          moon_text="Последняя четверть" ;;
-    2[3-9])      moon_text="Убывающий серп" ;;
-    *)           moon_text="день $moon_day_num" ;;
+    0)           moon_text="Новолуние"; moon_icon="󰽤" ;;
+    [1-6])       moon_text="Растущий серп"; moon_icon="󰽧" ;;
+    7)           moon_text="Первая четверть"; moon_icon="󰽨" ;;
+    [8-9]|1[0-3]) moon_text="Растущая"; moon_icon="󰽩" ;;
+    14|15)       moon_text="Полнолуние"; moon_icon="󰽢" ;;
+    1[6-9]|2[0-1]) moon_text="Убывающая"; moon_icon="󰽥" ;;
+    22)          moon_text="Последняя четверть"; moon_icon="󰽦" ;;
+    2[3-9])      moon_text="Убывающий серп"; moon_icon="󰽣" ;;
+    *)           moon_text="день $moon_day_num"; moon_icon="󰽢" ;;
 esac
 
 output="\${color0}WEATHER\${alignr}${temp}\${color}
