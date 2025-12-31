@@ -36,32 +36,32 @@ IFS='|' read -r icon_emoji temp feels condition humidity wind moon_emoji moon_da
 temp=$(echo "$temp" | tr -d '+')
 feels=$(echo "$feels" | tr -d '+')
 
-# Convert weather emoji to Nerd Font icon
+# Convert weather emoji to Nerd Font icon with color
 icon_emoji=$(echo "$icon_emoji" | tr -d ' ')
 case "$icon_emoji" in
-    ☀️|🌞)      icon="󰖙" ;;   # sunny
-    🌤️|⛅)      icon="󰖕" ;;   # partly cloudy
-    ☁️|🌥️)      icon="󰖐" ;;   # cloudy
-    🌧️|🌦️)      icon="󰖗" ;;   # rain
-    ⛈️|🌩️)      icon="󰖓" ;;   # thunderstorm
-    🌨️|❄️)      icon="󰼶" ;;   # snow
-    🌫️|🌁)      icon="󰖑" ;;   # fog
-    🌙|🌚)      icon="󰖔" ;;   # night
-    *)          icon="󰖐" ;;   # default cloudy
+    ☀️|🌞)      icon="\${color3}󰖙\${color}" ;;   # sunny - yellow
+    🌤️|⛅)      icon="\${color3}󰖕\${color}" ;;   # partly cloudy - yellow
+    ☁️|🌥️)      icon="\${color6}󰖐\${color}" ;;   # cloudy - gray
+    🌧️|🌦️)      icon="\${color4}󰖗\${color}" ;;   # rain - blue
+    ⛈️|🌩️)      icon="\${color3}󰖓\${color}" ;;   # thunderstorm - yellow
+    🌨️|❄️)      icon="\${color4}󰼶\${color}" ;;   # snow - blue
+    🌫️|🌁)      icon="\${color6}󰖑\${color}" ;;   # fog - gray
+    🌙|🌚)      icon="\${color3}󰖔\${color}" ;;   # night - yellow
+    *)          icon="\${color6}󰖐\${color}" ;;   # default cloudy - gray
 esac
 
-# Convert moon day to phase name and icon
+# Convert moon day to phase name and icon (yellow)
 moon_day_num=$(echo "$moon_day" | tr -d ' ')
 case $moon_day_num in
-    0)           moon_text="Новолуние"; moon_icon="󰽤" ;;
-    [1-6])       moon_text="Растущий серп"; moon_icon="󰽧" ;;
-    7)           moon_text="Первая четверть"; moon_icon="󰽨" ;;
-    [8-9]|1[0-3]) moon_text="Растущая"; moon_icon="󰽩" ;;
-    14|15)       moon_text="Полнолуние"; moon_icon="󰽢" ;;
-    1[6-9]|2[0-1]) moon_text="Убывающая"; moon_icon="󰽥" ;;
-    22)          moon_text="Последняя четверть"; moon_icon="󰽦" ;;
-    2[3-9])      moon_text="Убывающий серп"; moon_icon="󰽣" ;;
-    *)           moon_text="день $moon_day_num"; moon_icon="󰽢" ;;
+    0)           moon_text="Новолуние"; moon_icon="" ;;
+    [1-6])       moon_text="Растущий серп"; moon_icon="" ;;
+    7)           moon_text="Первая четверть"; moon_icon="" ;;
+    [8-9]|1[0-3]) moon_text="Растущая"; moon_icon="" ;;
+    14|15)       moon_text="Полнолуние"; moon_icon="" ;;
+    1[6-9]|2[0-1]) moon_text="Убывающая"; moon_icon="" ;;
+    22)          moon_text="Последняя четверть"; moon_icon="" ;;
+    2[3-9])      moon_text="Убывающий серп"; moon_icon="" ;;
+    *)           moon_text="день $moon_day_num"; moon_icon="" ;;
 esac
 
 output="\${color0}WEATHER\${alignr}${temp}\${color}
@@ -69,6 +69,6 @@ output="\${color0}WEATHER\${alignr}${temp}\${color}
 \${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
 \${color6}Влажность\${alignr}\${color}${humidity}
 \${color6}Ветер\${alignr}\${color}${wind}
-\${color6}Луна\${alignr}\${font0}${moon_icon}\${font} \${color}${moon_text}"
+\${color6}Луна\${alignr}\${font0}\${color3}${moon_icon}\${color}\${font} ${moon_text}"
 
 echo "$output" | tee "$CACHE"
