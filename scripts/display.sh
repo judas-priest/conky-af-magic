@@ -40,5 +40,5 @@ fastfetch --structure Display --logo none --pipe 2>/dev/null | while read -r lin
         fi
     done
 
-    echo "\${color6}$name: \${color}${res}@${freq}Hz\${color6}, ${size}\"\${color}"
+    printf '${color6}%s: ${color}%s@%sHz${color6}, %s"${color}\n' "$name" "$res" "$freq" "$size"
 done
