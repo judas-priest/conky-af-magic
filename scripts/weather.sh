@@ -58,7 +58,7 @@ case "$condition" in
     "Patchy light snow"|"Light snow")         condition="Небольшой снег" ;;
     "Moderate snow"|"Patchy moderate snow")   condition="Снег" ;;
     "Heavy snow"|"Patchy heavy snow")         condition="Сильный снег" ;;
-    "Light snow showers")                     condition="Небольшой снег" ;;
+    "Light snow showers"|"Light snow shower")  condition="Небольшой снег" ;;
     "Moderate or heavy snow showers")         condition="Снегопад" ;;
     "Blowing snow"|"Blizzard")                condition="Метель" ;;
 

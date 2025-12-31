@@ -2,6 +2,21 @@
     Conky AF-Magic - Format utilities
 ]]
 
+-- Battery bar color based on status
+-- Discharging = green, Full = gray, Charging = orange
+function conky_battery_color()
+    local status = conky_parse('${battery_status}')
+    if status == nil then status = '' end
+    status = status:gsub('%s+', '')  -- trim whitespace
+    if status == "Full" or status == "Not charging" then
+        return "${color6}"
+    elseif status == "Discharging" then
+        return "${color2}"
+    else
+        return "${color3}"
+    end
+end
+
 -- Returns only the number, strips unit
 function conky_val(arg)
     if arg == nil or arg == '' then return '' end
