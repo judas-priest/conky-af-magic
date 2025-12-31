@@ -31,6 +31,7 @@ fi
 IFS='|' read -r icon_emoji temp feels condition humidity wind moon_emoji moon_day <<< "$data"
 temp=$(echo "$temp" | tr -d '+')
 feels=$(echo "$feels" | tr -d '+')
+condition=$(echo "$condition" | cut -c1-25)
 
 # Nerd Font icons (using printf for correct UTF-8)
 NF_SUNNY=$(printf '\xf3\xb0\x96\x99')      # nf-md-weather_sunny
@@ -42,18 +43,18 @@ NF_SNOWY="❄"                               # Unicode snowflake
 NF_FOG=$(printf '\xf3\xb0\x96\x91')        # nf-md-weather_fog
 NF_NIGHT=$(printf '\xf3\xb0\x96\x94')      # nf-md-weather_night
 
-# Convert weather emoji to Nerd Font icon with color
+# Convert weather emoji to icon with color
 icon_emoji=$(echo "$icon_emoji" | tr -d ' ')
 case "$icon_emoji" in
-    *☀*|*🌞*)   icon="\${color3}${NF_SUNNY}\${color}" ;;
-    *🌤*|*⛅*)   icon="\${color3}${NF_PCLOUDY}\${color}" ;;
-    *☁*|*🌥*)   icon="\${color6}${NF_CLOUDY}\${color}" ;;
-    *🌧*|*🌦*)   icon="\${color4}${NF_RAINY}\${color}" ;;
-    *⛈*|*🌩*)   icon="\${color3}${NF_THUNDER}\${color}" ;;
+    *☀*|*🌞*)   icon="\${font0}\${color3}${NF_SUNNY}\${color}\${font}" ;;
+    *🌤*|*⛅*)   icon="\${font0}\${color3}${NF_PCLOUDY}\${color}\${font}" ;;
+    *☁*|*🌥*)   icon="\${font0}\${color6}${NF_CLOUDY}\${color}\${font}" ;;
+    *🌧*|*🌦*)   icon="\${font0}\${color4}${NF_RAINY}\${color}\${font}" ;;
+    *⛈*|*🌩*)   icon="\${font0}\${color3}${NF_THUNDER}\${color}\${font}" ;;
     *🌨*|*❄*)   icon="\${color4}${NF_SNOWY}\${color}" ;;
-    *🌫*|*🌁*)   icon="\${color6}${NF_FOG}\${color}" ;;
-    *🌙*|*🌚*)   icon="\${color3}${NF_NIGHT}\${color}" ;;
-    *)          icon="\${color6}${NF_CLOUDY}\${color}" ;;
+    *🌫*|*🌁*)   icon="\${font0}\${color6}${NF_FOG}\${color}\${font}" ;;
+    *🌙*|*🌚*)   icon="\${font0}\${color3}${NF_NIGHT}\${color}\${font}" ;;
+    *)          icon="\${font0}\${color6}${NF_CLOUDY}\${color}\${font}" ;;
 esac
 
 # Wind direction arrows with colors
@@ -89,7 +90,7 @@ case $moon_day_num in
 esac
 
 output="\${color0}WEATHER\${alignr}${temp}\${color}
-\${color6}${CITY}\${alignr}\${font0}${icon}\${font} \${color}${condition}
+\${color6}${CITY}\${alignr}${icon} \${color}${condition}
 \${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
 \${color6}Влажность\${alignr}\${color}${humidity}
 \${color6}Ветер\${alignr}\${color}${wind_colored}
