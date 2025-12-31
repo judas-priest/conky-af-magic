@@ -24,7 +24,6 @@ get_weather() {
     curl -sf --max-time 5 "wttr.in/${CITY}?format=$1&lang=${LANG}" 2>/dev/null
 }
 
-code=$(get_weather "%c" | tr -d ' ')
 temp=$(get_weather "%t" | tr -d '+')
 feels=$(get_weather "%f" | tr -d '+')
 condition=$(get_weather "%C")
@@ -36,27 +35,25 @@ if [[ -z "$temp" || "$temp" == "Unknown"* ]]; then
     exit 0
 fi
 
-# Nerd Font weather icons based on condition
+# Simple ASCII icons
 case "$condition" in
     *[Яя]сно*|*[Сс]олнечно*|*[Cc]lear*|*[Ss]unny*)
-        icon="" ;;  # nf-weather-day_sunny
+        icon="[*]" ;;
     *[Оо]блачно*|*[Cc]loudy*|*[Пп]асмурно*)
-        icon="" ;;  # nf-weather-cloudy
-    *[Дд]ождь*|*[Rr]ain*|*[Лл]ивень*)
-        icon="" ;;  # nf-weather-rain
+        icon="[~]" ;;
+    *[Дд]ождь*|*[Rr]ain*|*[Лл]ивень*|*[Оо]садки*)
+        icon="[/]" ;;
     *[Сс]нег*|*[Ss]now*|*[Мм]етель*)
-        icon="" ;;  # nf-weather-snow
+        icon="[#]" ;;
     *[Гг]роза*|*[Tt]hunder*|*[Мм]олния*)
-        icon="" ;;  # nf-weather-thunderstorm
+        icon="[!]" ;;
     *[Тт]уман*|*[Ff]og*|*[Дд]ымка*)
-        icon="" ;;  # nf-weather-fog
-    *[Пп]еремен*|*[Pp]artly*)
-        icon="" ;;  # nf-weather-day_cloudy
+        icon="[=]" ;;
     *)
-        icon="" ;;  # default cloudy
+        icon="[?]" ;;
 esac
 
-output="${icon} \${color6}${CITY}\${alignr}\${color0}${temp}\${color}
+output="\${color0}${icon}\${color} \${color6}${CITY}\${alignr}\${color0}${temp}\${color}
 \${color5}${condition}\${color}
 \${voffset 5}\${color6}Ощущается\${alignr}\${color}${feels}
 \${color6}Влажность\${alignr}\${color}${humidity}
